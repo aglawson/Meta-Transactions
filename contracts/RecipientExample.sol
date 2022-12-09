@@ -2,7 +2,9 @@
 pragma solidity 0.8.17;
 
 contract RecipientExample {
-    function purchaseItem() external view returns (address){
+    uint256 public calls;
+    function getabcdefe() external returns (address){
+        calls++;
         return _msgSender();
         // ... perform the purchase for sender
     }
@@ -23,5 +25,9 @@ contract RecipientExample {
                 signer := shr(96,calldataload(sub(calldatasize(),20)))
             }
         }    
+    }
+
+    function getBalance() public view returns(uint256) {
+        return address(this).balance;
     }
 }

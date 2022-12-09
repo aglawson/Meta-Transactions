@@ -3,5 +3,8 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "hardhat": "^2.12.3"
+  },
+  "dependencies": {
+    "ethereumjs-tx": "^2.1.2"
   }
 }
