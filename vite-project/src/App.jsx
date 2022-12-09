@@ -22,22 +22,27 @@ const relayer = '0xE39448E03A98111D6817668B015d3598d6aD0E8A';
 const recipient = '0x8f2D26DE3D7d96Ad92312ead846B2B3Fdf290ff7';
 
 function App() {
+
+  async function getCalls() {
+    forwarder = new ethers.Contract(relayer, MFABI, rpc_provider);
+
+    rec = new ethers.Contract(recipient, RABI, rpc_provider);
+    let _num = await rec.calls();
+    if(num == 0){
+      setNum(parseInt(_num));
+    }
+  }
+
   async function getSigner () {
     try{
       await initializeRpc();
-
+      await getCalls();
       provider = new ethers.providers.Web3Provider(window.ethereum)
       await provider.send("eth_requestAccounts", []);
   
       signer = await provider.getSigner();
   
       userAddress = await signer.getAddress();
-
-      forwarder = new ethers.Contract(relayer, MFABI, provider);
-
-      rec = new ethers.Contract(recipient, RABI, provider);
-      let _num = await rec.calls();
-      setNum(parseInt(_num));
 
       setMessage('Sign Message');
   
@@ -67,9 +72,9 @@ function App() {
     const flatSignature = await signer.signMessage(arrayifyMessage)
     try {
       const execute = await forwarder.connect(rpc_wallet).execute(Req, flatSignature);
-      //console.log(execute);
-      let _num = await rec.calls();
-      setNum(parseInt(_num));
+        let _num = await rec.calls();
+        setNum(parseInt(_num) + 1);
+        alert(execute.hash);
     } catch(error) {
       alert(error.message);
     }
@@ -84,7 +89,7 @@ function App() {
     <div className="App">
       <h1>Relay</h1>
       <div className="card">
-        <p>{message == 'Connect Wallet' ? message : 'successful relays: ' + num}</p>
+        <p>{message == 'Connect Wallet' ? message : 'Successful Relays: ' + num}</p>
         <button onClick={() => message == 'Connect Wallet' ? getSigner() : signMessage()}>
           {message}
         </button>
