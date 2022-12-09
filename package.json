@@ -5,6 +5,8 @@
     "hardhat": "^2.12.3"
   },
   "dependencies": {
-    "ethereumjs-tx": "^2.1.2"
+    "ethereumjs-tx": "^2.1.2",
+    "ethers": "^5.7.2",
+    "vite": "^4.0.0"
   }
 }
