@@ -92,6 +92,7 @@ function App() {
   return (
     <div className="App">
       <h1>Relay</h1>
+      <p>Send a smart contract function call without paying any gas! Simply click the button and sign a message.</p>
       <div className="card">
         <p>{message == 'Connect Wallet' ? message : 'Successful Relays: ' + num}</p>
         <button onClick={() => message == 'Connect Wallet' ? getSigner() : signMessage()}>
