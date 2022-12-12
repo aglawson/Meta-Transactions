@@ -19,7 +19,7 @@ async function initializeRpc() {
 }
 
 const relayer = '0xE39448E03A98111D6817668B015d3598d6aD0E8A';
-const recipient = '0x8f2D26DE3D7d96Ad92312ead846B2B3Fdf290ff7';
+const recipient = '0x77195c37299f093B0B15C081d7947F00abbd08D4';
 
 function App() {
 
@@ -43,6 +43,9 @@ function App() {
       signer = await provider.getSigner();
   
       userAddress = await signer.getAddress();
+
+      let sender = await rec.latestSender();
+      console.log(sender);
 
       setMessage('Sign Message');
   
@@ -72,15 +75,16 @@ function App() {
     const flatSignature = await signer.signMessage(arrayifyMessage)
     try {
       const execute = await forwarder.connect(rpc_wallet).execute(Req, flatSignature);
+      console.log(execute);
         let _num = await rec.calls();
+        let sender = await rec.latestSender();
+        console.log(sender);
         setNum(parseInt(_num) + 1);
         alert(execute.hash);
     } catch(error) {
       alert(error.message);
     }
   }
-
-
 
   const [message, setMessage] = useState('Connect Wallet');
   const [num, setNum] = useState(0);
