@@ -85,7 +85,7 @@ function App() {
       <h1>Relay</h1>
       <p>Approve OMH spends once and buy in game items with no gas fees!</p>
       <div className="card">
-        <p>{message == 'Connect Wallet' ? 'Connect Wallet' : 'Connected: ' + userAddress}</p>
+        <p>{message == 'Connect Wallet' ? 'Not Connected' : 'Connected: ' + userAddress}</p>
         <button onClick={() => message == 'Connect Wallet' ? getSigner() : signMessage()}>
           {message}
         </button>
