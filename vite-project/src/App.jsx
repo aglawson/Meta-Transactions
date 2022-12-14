@@ -25,7 +25,12 @@ function App() {
       signer = await provider.getSigner();
       userAddress = await signer.getAddress();
 
-      setMessage('Sign Message');
+      const allowance = await omh_contract.allowance(userAddress, recipient);
+      if(parseInt(allowance) < 1000) {
+        setMessage('Approve OMH Spend');
+      } else {
+        setMessage('Sign Message');
+      }
   
     } catch (error){
       alert(error.message);
@@ -36,7 +41,13 @@ function App() {
     const nonce = await forwarder.getNonce(userAddress);
     const allowance = await omh_contract.allowance(userAddress, recipient);
     if(parseInt(allowance) < 1000) {
-      await omh_contract.connect(signer).approve(recipient, '1000000000000000000000000000000000000000');
+      try{
+        const approvaltx = await omh_contract.connect(signer).approve(recipient, '1000000000000000000000000000000000000000');
+        await approvaltx.wait(1);
+        setMessage('Sign Message');
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
     let data = abiCoder.encode(['uint256', 'uint256'], ['1000000000000000000', '0']);
@@ -62,7 +73,6 @@ function App() {
       const execute = await fetch(
         `${URL}${JSON.stringify(Req)}&signature=${flatSignature}`
       );
-      console.log(execute);
     } catch(error) {
       alert(error.message);
     }
