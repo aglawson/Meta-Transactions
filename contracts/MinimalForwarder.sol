@@ -5,6 +5,7 @@ pragma solidity 0.8.17;
 
 import "./ECDSA.sol";
 import "./EIP712.sol";
+import "./Ownable.sol";
 
 /**
  * @dev Simple minimal forwarder to be used together with an ERC2771 compatible contract. See {ERC2771Context}.
@@ -14,7 +15,7 @@ import "./EIP712.sol";
  * functioning forwarding system with good properties requires more complexity. We suggest you look at other projects
  * such as the GSN which do have the goal of building a system like that.
  */
-contract MinimalForwarder is EIP712 {
+contract MinimalForwarder is EIP712, Ownable {
     using ECDSA for bytes32;
 
     struct ForwardRequest {
@@ -52,28 +53,10 @@ contract MinimalForwarder is EIP712 {
         return ((_nonces[req.from] == req.nonce && signer == req.from));
     }
 
-    function isMessageValid(address from, bytes memory _signature)
-        public
-        view
-        returns (address, bool)
-    {
-        bytes32 messagehash = keccak256(
-            abi.encodePacked(address(this), msg.sender)
-        );
-        address signer = messagehash.toEthSignedMessageHash().recover(
-            _signature
-        );
-
-        if (from == signer) {
-            return (signer, true);
-        } else {
-            return (signer, false);
-        }
-    }
-
     function execute(ForwardRequest calldata req, bytes calldata signature)
         public
         payable
+        onlyOwner
         returns (bool, bytes memory)
     {
         require(verify(req, signature), "MinimalForwarder: signature does not match request");
