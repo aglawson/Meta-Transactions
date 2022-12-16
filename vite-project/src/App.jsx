@@ -29,6 +29,16 @@ function App() {
       signer = await provider.getSigner();
       userAddress = await signer.getAddress();
 
+      if(provider.network.chainId != 5) {
+        //https://rpc.goerli.dev
+        await window.ethereum.request({
+         method: "wallet_switchEthereumChain",
+         params: [{
+             chainId: "0x5"
+         }]
+        });
+       }
+
       const allowance = await token_contract.allowance(userAddress, recipient);
       if(parseInt(allowance) < 1000) {
         setMessage('Approve Token Spend');
@@ -36,8 +46,8 @@ function App() {
         setMessage('Sign Message');
       }
   
-    } catch (error){
-      alert(error.message);
+    } catch{
+      getSigner();
     }
   }
 
