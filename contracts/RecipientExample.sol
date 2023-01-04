@@ -79,29 +79,29 @@ interface IERC20 {
 }
 
 contract RecipientExample is Ownable {
-    IERC20 public OMH;
+    IERC20 public token;
 
     event paid(address payer, uint256 amount, uint256 item);
     function pay(uint256 amount, uint256 item) external {
         address caller = msgSender();
-        bool success = OMH.transferFrom(caller, address(this), amount);
+        bool success = token.transferFrom(caller, address(this), amount);
         require(success, 'Transfer fail');
         emit paid(caller, amount, item);
     }
 
-    function withdrawOMH() external onlyOwner {
-        bool success = OMH.transfer(owner(), OMH.balanceOf(address(this)));
+    function withdrawtoken() external onlyOwner {
+        bool success = token.transfer(owner(), token.balanceOf(address(this)));
         require(success, 'Transfer fail');
     }
 
-    function omhBal() external view returns(uint256){
-        return OMH.balanceOf(address(this));
+    function tokenBal() external view returns(uint256){
+        return token.balanceOf(address(this));
     }
 
     address immutable _trustedForwarder;
-    constructor(address trustedForwarder, address omh) {
+    constructor(address trustedForwarder, address _token) {
         _trustedForwarder = trustedForwarder;
-        OMH = IERC20(omh);
+        token = IERC20(_token);
     }
 
     function isTrustedForwarder(address forwarder) public view returns(bool) {
