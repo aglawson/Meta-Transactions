@@ -14,7 +14,7 @@ let abiCoder;
 let link = etherscan;
 
 const relayer = '0x2A0d1f0EE9c5584b1694BCa16879423432770A52';
-const recipient = '0x85Ee6Ce038A5518Eb7897578ffDf675eF06dB3F7' //'0x62aEeD88eA286283D86ac1a00164073028bF3689';
+const recipient = '0x85Ee6Ce038A5518Eb7897578ffDf675eF06dB3F7';
 
 function App() {
 
@@ -25,7 +25,6 @@ function App() {
       provider = new ethers.providers.Web3Provider(window.ethereum)
       forwarder = new ethers.Contract(relayer, MFABI, provider);
       await provider.send("eth_requestAccounts", []);
-      //token_contract = new ethers.Contract(token, TOKEN_ABI, provider);
       signer = await provider.getSigner();
       userAddress = await signer.getAddress();
 
@@ -39,13 +38,7 @@ function App() {
         });
        }
 
-      // const allowance = await token_contract.allowance(userAddress, recipient);
-      // if(parseInt(allowance) < 1000) {
-      //   setMessage('Approve Token Spend');
-      // } else {
-      setMessage('Mint');
-      // }
-  
+      setMessage('Mint');  
     } catch{
       getSigner();
     }
@@ -59,20 +52,9 @@ function App() {
   async function signMessage (e) {
     e.preventDefault();
     const nonce = await forwarder.getNonce(userAddress);
-    // const allowance = await token_contract.allowance(userAddress, recipient);
-    // if(parseInt(allowance) < 1000) {
-    //   try{
-    //     const approvaltx = await token_contract.connect(signer).approve(recipient, '1000000000000000000000000');
-    //     await approvaltx.wait(1);
-    //     setMessage('Sign Message');
-    //   } catch (error) {
-    //     alert(error.message);
-    //   }
-    // }
 
     let data = abiCoder.encode(['uint256'], [amount]);
     data = data.slice(2,data.length);
-    // console.log(data);
     const Req = {
       from: userAddress,
       to: recipient,
@@ -128,17 +110,13 @@ function App() {
       </div>
       <div className="card">
         <p>{message == 'Connect Wallet' ? 'Not Connected' : 'Connected: ' + userAddress}</p>
-        {/* <button onClick={() => mint()}>Mint 100 Test Tokens</button> */}
-        {/* <button onClick={() => message == 'Connect Wallet' ? getSigner() : signMessage()}>
-          {message}
-        </button> */}
 
         <form onSubmit={e => message == 'Connect Wallet' ? getSigner(e) : signMessage(e)}>
           <button type="submit">{message == 'Connect Wallet' ? message : message + ' ' + amount}</button>
 			  </form>
+        
         <button onClick={() => updateAmount('up')}>^</button>
         <button onClick={() => updateAmount('down')}>v</button>
-        
       </div>
     </div>
   )
